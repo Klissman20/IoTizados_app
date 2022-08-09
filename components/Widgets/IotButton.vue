@@ -14,6 +14,7 @@
 
 <script>
 export default {
+  name: "iotbutton",
   props: ['config'],
   data() {
     return {
@@ -57,6 +58,9 @@ export default {
       }
       if (this.config.class == "danger") {
         return "text-danger";
+      }
+      if (this.config.class == "info") {
+        return "text-info";
       }
     },
   },

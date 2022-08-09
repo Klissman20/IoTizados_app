@@ -9,7 +9,7 @@
             <h3 class="card-title">
                 <i class="fa " :class="[config.icon, getIconColorClass()]" aria-hidden="true"
                     style="font-size: 30px;"></i>
-                <base-switch @click="value = !value; sendValue()" :value="value" type="primary" on-text="ON" off-text="OFF" style="margin-top: 10px;" class="pull-right">
+                <base-switch @click="value = !value; sendValue()" :value="value" on-text="ON" off-text="OFF" style="margin-top: 10px;" class="pull-right">
                 </base-switch>
 
             </h3>
@@ -68,6 +68,9 @@
                 }
                 if (this.config.class == "danger") {
                     return "text-danger";
+                }
+                if (this.config.class == "info") {
+                    return "text-info";
                 }
             },
 

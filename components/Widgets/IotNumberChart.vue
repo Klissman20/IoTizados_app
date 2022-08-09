@@ -30,7 +30,7 @@
 
 <script>
     export default {
-        name: 'rtnumberchart',
+        name: 'iotnumberchart',
         props: ['config'],
         data() {
             return {
@@ -162,6 +162,9 @@
                 if (c == "danger") {
                     this.chartOptions.series[0].color = "#fd5d93";
                 }
+                if (c == "info") {
+                    this.chartOptions.series[0].color = "#197Cff";
+                }
 
                 this.chartOptions.series[0].name = this.config.variableFullName + " " + this.config.unit;
 
@@ -227,6 +230,9 @@
                 }
                 if (this.config.class == "danger") {
                     return "text-danger";
+                }
+                if (this.config.class == "info") {
+                    return "text-info";
                 }
             },
 

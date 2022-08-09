@@ -54,7 +54,7 @@
 
         <div class="row pull-right">
           <div class="col-12">
-            <base-button type="primary" class="mb-3" size="lg">ADD</base-button>
+            <base-button round type="info" class="mb-3" size="lg">ADD</base-button>
           </div>
         </div>
       </card>
@@ -150,7 +150,6 @@
 import Json from "~/components/Json.vue";
 import { Table, TableColumn } from "element-ui";
 import { Select, Option } from "element-ui";
-import BaseButton from "~/components/BaseButton.vue";
 
 export default {
   components: {

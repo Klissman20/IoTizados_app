@@ -10,6 +10,7 @@
 
 <script>
     export default {
+        name: "iotindicator",
         props: ['config'],
         data() {
             return {
@@ -48,7 +49,9 @@
                 if(this.config.class == "danger"){
                     return "text-danger"
                 }
-                
+                if (this.config.class == "info") {
+                    return "text-info"
+                }
             }
         }
     }

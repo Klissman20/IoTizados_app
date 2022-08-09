@@ -14,7 +14,7 @@
           <div class="col-6">
             <el-select
               v-model="widgetType"
-              class="select-success"
+              class="select-info"
               placeholder="Select Widget"
               style="width: 100%"
             >
@@ -88,7 +88,7 @@
               <label>Class</label>
               <el-select
                 v-model="iotNumberChartConfig.class"
-                class="select-success"
+                class="select-info"
                 placeholder="Select Class"
                 style="width: 100%"
               >
@@ -112,13 +112,18 @@
                   value="danger"
                   label="Danger"
                 ></el-option>
+                <el-option
+                  class="text-info"
+                  value="info"
+                  label="Info"
+                ></el-option>
               </el-select>
 
               <br />
               <label>Column</label>
               <el-select
                 v-model="iotNumberChartConfig.column"
-                class="select-success"
+                class="select-info"
                 placeholder="Select Column Width"
                 style="width: 100%"
               >
@@ -190,11 +195,10 @@
                 type="text"
               ></base-input>
 
-              <br />
-
+              <label>Class</label>
               <el-select
                 v-model="iotSwitchConfig.class"
-                class="select-success"
+                class="select-info"
                 placeholder="Select Class"
                 style="width: 100%"
               >
@@ -218,13 +222,18 @@
                   value="danger"
                   label="Danger"
                 ></el-option>
+                <el-option
+                  class="text-info"
+                  value="info"
+                  label="Info"
+                ></el-option>
               </el-select>
 
-              <br /><br /><br />
-
+              <br><br>
+              <label>Column</label>
               <el-select
                 v-model="iotSwitchConfig.column"
-                class="select-success"
+                class="select-info"
                 placeholder="Select Column Width"
                 style="width: 100%"
               >
@@ -310,11 +319,10 @@
                 type="text"
               ></base-input>
 
-              <br />
-
+              <label>Class</label>
               <el-select
                 v-model="iotButtonConfig.class"
-                class="select-success"
+                class="select-info"
                 placeholder="Select Class"
                 style="width: 100%"
               >
@@ -338,13 +346,18 @@
                   value="danger"
                   label="Danger"
                 ></el-option>
+                <el-option
+                  class="text-info"
+                  value="info"
+                  label="Info"
+                ></el-option>
               </el-select>
 
-              <br /><br /><br />
-
+              <br><br>
+              <label>Column</label>
               <el-select
                 v-model="iotButtonConfig.column"
-                class="select-success"
+                class="select-info"
                 placeholder="Select Column Width"
                 style="width: 100%"
               >
@@ -424,11 +437,10 @@
                 type="text"
               ></base-input>
 
-              <br />
-
+              <label>Class</label>
               <el-select
                 v-model="iotIndicatorConfig.class"
-                class="select-success"
+                class="select-info"
                 placeholder="Select Class"
                 style="width: 100%"
               >
@@ -452,13 +464,18 @@
                   value="danger"
                   label="Danger"
                 ></el-option>
+                <el-option
+                  class="text-info"
+                  value="info"
+                  label="Info"
+                ></el-option>
               </el-select>
 
-              <br /><br /><br />
-
+              <br><br>
+              <label>Column</label>
               <el-select
                 v-model="iotIndicatorConfig.column"
-                class="select-success"
+                class="select-info"
                 placeholder="Select Column Width"
                 style="width: 100%"
               >
@@ -540,7 +557,7 @@
           <div class="col-12">
             <base-button
               native-type="submit"
-              type="primary"
+              round type="info"
               class="mb-3"
               size="lg"
               @click="addNewWidget()"
@@ -686,15 +703,19 @@
         </div>
       </card>
     </div>
+
+    <Json :value="widgets"></Json>
   </div>
 </template>
 
 <script>
+import Json from "~/components/Json.vue";
 import { Table, TableColumn } from "element-ui";
 import { Select, Option } from "element-ui";
 
 export default {
   components: {
+    Json,
     [Table.name]: Table,
     [TableColumn.name]: TableColumn,
     [Option.name]: Option,
@@ -736,17 +757,14 @@ export default {
         userId: "userid",
         selectedDevice: {
           name: "Home",
-          dId: "12345",
-          templateName: "PowerSensor",
-          templateId: "1234jkhkjlj",
-          saveRule: false,
+          dId: "12345"
         },
         variableFullName: "Pump",
         variable: "uniquestr",
         icon: "fa-sun",
         column: "col-6",
         widget: "button",
-        class: "success",
+        class: "info",
         message: "PROBEMSG",
         text: "SEND",
       },
@@ -755,10 +773,7 @@ export default {
         userId: "userid",
         selectedDevice: {
           name: "Home",
-          dId: "12345",
-          templateName: "PowerSensor",
-          templateId: "1234jkhkjlj",
-          saveRule: false,
+          dId: "12345"
         },
         variableFullName: "Pump",
         variable: "uniquestr",
@@ -774,15 +789,12 @@ export default {
         selectedDevice: {
           name: "Home",
           dId: "12345",
-          templateName: "PowerSensor",
-          templateId: "1234jkhkjlj",
-          saveRule: false,
         },
         variableFullName: "Pump",
         variable: "uniquestr",
         icon: "fa-sun",
         column: "col-6",
-        widget: "indicator",
+        widget: "switch",
         class: "danger",
       },
     };
