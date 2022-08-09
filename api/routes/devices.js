@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-//const { checkAuth } = require("../middlewares/authentication.js");
+const { checkAuth } = require("../middlewares/authentication.js");
 //const axios = require("axios");
 
-/*import Device from "../models/device.js";
-import SaverRule from "../models/emqx_saver_rule.js";
+import Device from "../models/device.js";
+/*import SaverRule from "../models/emqx_saver_rule.js";
 import Template from "../models/template.js";
 import AlarmRule from "../models/emqx_alarm_rule.js";
 import EmqxAuthRule from "../models/emqx_auth.js";*/
@@ -15,14 +15,14 @@ import EmqxAuthRule from "../models/emqx_auth.js";*/
 //**** A P I *******
 //****************** 
 
-/*
 
-const auth = {
-  auth: {
-    username: "admin",
-    password: process.env.EMQX_DEFAULT_APPLICATION_SECRET
-  }
-};
+
+//const auth = {
+//  auth: {
+//    username: "admin",
+//    password: process.env.EMQX_DEFAULT_APPLICATION_SECRET
+//  }
+//};
 
 
 //GET DEVICES
@@ -76,6 +76,8 @@ router.get("/device", checkAuth, async (req, res) => {
     return res.status(500).json(response);
   }
 });
+
+/*
 
 //NEW DEVICE
 router.post("/device", checkAuth, async (req, res) => {
