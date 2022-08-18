@@ -18,7 +18,7 @@
          <sidebar-item
           :link="{
             name: 'Devices',
-            icon: 'tim-icons icon-chart-pie-36',
+            icon: 'tim-icons icon-controller',
             path: '/devices'
           }"
         >
@@ -26,7 +26,7 @@
          <sidebar-item
           :link="{
             name: 'Alarms',
-            icon: 'tim-icons icon-chart-pie-36',
+            icon: 'tim-icons icon-time-alarm',
             path: '/alarms'
           }"
         >
@@ -34,7 +34,7 @@
          <sidebar-item
           :link="{
             name: 'Templates',
-            icon: 'tim-icons icon-chart-pie-36',
+            icon: 'tim-icons icon-components',
             path: '/templates'
           }"
         >

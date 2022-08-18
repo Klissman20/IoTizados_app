@@ -3,8 +3,8 @@
     <div class="col-lg-4 col-md-6 ml-auto mr-auto">
       <card class="card-login card-white">
         <template slot="header">
-          <img src="img//card-primary.png" alt="" />
-          <h1 class="card-title">IoT GL   </h1>
+          <img src="img//card-info.png" alt="" />
+          <h1 class="card-title">IoT DeV - Login</h1>
         </template>
 
         <div>
@@ -29,7 +29,7 @@
         <div slot="footer">
           <base-button
             native-type="submit"
-            type="primary"
+            type="info"
             class="mb-3"
             size="lg"
             @click="login()"
@@ -39,14 +39,14 @@
           </base-button>
           <div class="pull-left">
             <h6>
-              <nuxt-link class="link footer-link" to="/register">
+              <nuxt-link class="text-info link footer-link" to="/register">
                 Create Account
               </nuxt-link>
             </h6>
           </div>
 
           <div class="pull-right">
-            <h6><a href="#help!!!" class="link footer-link">Need Help?</a></h6>
+            <h6><a href="#help!!!" class="text-info link footer-link">Need Help?</a></h6>
           </div>
         </div>
       </card>
@@ -93,7 +93,7 @@ export default {
               userData: res.data.userData
             }
 
-            //token to de store - token a la tienda
+            //token to store - token a la tienda
             this.$store.commit('setAuth', auth);
 
             //set auth object in localStorage - Grabamos el token en localStorage
@@ -109,7 +109,7 @@ export default {
 
           if (e.response.data.error.errors.email.kind == "unique") {
             this.$notify({
-              type: "danger",
+              type: "warning",
               icon: "tim-icons icon-alert-circle-exc",
               message: "User already exists :("
             });

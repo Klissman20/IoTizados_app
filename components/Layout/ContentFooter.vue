@@ -9,7 +9,7 @@
             rel="noopener"
             class="nav-link"
           >
-            Creative Tim
+            IoTiZaDoS
           </a>
         </li>
         <li class="nav-item">
@@ -40,9 +40,9 @@
           href="https://www.creative-tim.com/?ref=pdf-vuejs"
           target="_blank"
           rel="noopener"
-          >Creative Tim</a
+          >Klissman Id</a
         >
-        for a better web.
+        for Internet of Things.
       </div>
     </div>
   </footer>

@@ -20,7 +20,8 @@
     </div>
 
     <ul class="navbar-nav" :class="$rtl.isRTL ? 'mr-auto' : 'ml-auto'">
-      <div class="search-bar input-group" @click="searchModalVisible = true">
+
+      <!--<div class="search-bar input-group" @click="searchModalVisible = true">
         <button
           class="btn btn-link"
           id="search-button"
@@ -29,8 +30,9 @@
         >
           <i class="tim-icons icon-zoom-split"></i>
         </button>
-        <!-- You can choose types of search input -->
+        
       </div>
+
       <modal
         :show.sync="searchModalVisible"
         class="modal-search"
@@ -46,7 +48,14 @@
           id="inlineFormInputGroup"
           placeholder="SEARCH"
         />
-      </modal>
+      </modal> -->
+
+      <el-select class="select-success" placeholder="Select Device" @change="selectDevice()" v-model="selectedDevice">
+        <el-option v-for="device, index in $store.state.devices" :value="index" :label="device.name" :key="device._id">
+
+        </el-option>
+      </el-select>
+
       <base-dropdown
         tag="li"
         :menu-on-right="!$rtl.isRTL"
@@ -113,12 +122,15 @@
 <script>
 import { CollapseTransition } from 'vue2-transitions';
 import { BaseNav, Modal } from '@/components';
+import { Select, Option } from 'element-ui';
 
 export default {
   components: {
     CollapseTransition,
     BaseNav,
-    Modal
+    Modal,
+    [Select.name]: Select,
+    [Option.name]: Option
   },
   computed: {
     routeName() {
@@ -138,10 +150,39 @@ export default {
       activeNotifications: false,
       showMenu: false,
       searchModalVisible: false,
-      searchQuery: ''
+      searchQuery: '',
+      selectedDevice: null
     };
   },
+  mounted(){
+    this.$store.dispatch('getDevices');
+    this.$nuxt.$on("selectedDeviceIndex", this.updateSelectedDeviceIndex);
+  },
   methods: {
+
+    updateSelectedDeviceIndex(index){
+      this.selectedDevice = index;
+    },
+    selectDevice(){
+      const device = this.$store.state.devices[this.selectedDevice];
+
+      const axiosHeaders = {
+        headers:{
+          token: this.$store.state.auth.token
+        }
+      };
+
+      const toSend = {
+        dId: device.dId,
+      };
+
+      this.$axios.put("/device", toSend, axiosHeaders).then(res => {
+        this.$store.dispatch('getDevices'); 
+      }).catch(e =>{
+        console.log(e);
+        return;
+      });
+    },
     capitalizeFirstLetter(string) {
       if (!string || typeof string !== 'string') {
         return ''
