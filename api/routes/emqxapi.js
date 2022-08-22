@@ -104,11 +104,12 @@ async function createResources() {
     //const url = "http://" + process.env.EMQX_API_HOST + ":8085/api/v4/resources";
 
     const data1 = {
-        body: "{\"payload\":${payload},\"topic\":\"${topic}\"}",
+        body: "{\"payload\":${payload}}",
+        direction: "egress",
         connect_timeout: "15s",
         enable: true,
         enable_pipelining: 100,
-        local_topic: "emqx_webhook/#",
+        local_topic: "web_hook/saver_Rule",
         max_retries: 3,
         method: "post",
         name: "saver-webhook",
@@ -140,11 +141,11 @@ async function createResources() {
     };*/
 
     const data2 = {
-        body: "",
+        body: "{\"payload\":${payload}}",
         connect_timeout: "15s",
         enable: true,
         enable_pipelining: 100,
-        local_topic: "emqx_webhook/#",
+        local_topic: "web_hook/alarm_Rule",
         max_retries: 3,
         method: "post",
         name: "alarm-webhook",
@@ -197,6 +198,7 @@ async function createResources() {
   }
 }
 
+/*
 //check if superuser exist if not we create one
 global.check_mqtt_superuser = async function checkMqttSuperUser() {
   try {
@@ -223,6 +225,7 @@ global.check_mqtt_superuser = async function checkMqttSuperUser() {
     console.log(error);
   }
 };
+*/
 
 setTimeout(() => {
   console.log("LISTING RESOURCES!!!!!!!!!");

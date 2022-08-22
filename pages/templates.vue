@@ -925,6 +925,12 @@ export default {
 
     addNewWidget() {
       if (this.widgetType == "numberchart") {
+        const userId = this.$store.state.auth.userData._id;
+        this.iotNumberChartConfig.userId = userId;
+        /*this.iotNumberChartConfig.selectedDevice.name = this.$store.state.selectedDevice.name;
+        this.iotNumberChartConfig.selectedDevice.dId = this.$store.state.selectedDevice.dId;
+        this.iotNumberChartConfig.selectedDevice.templateName = this.$store.state.selectedDevice.templateName;
+        this.iotNumberChartConfig.selectedDevice.templateId = this.$store.state.selectedDevice.templateId;*/
         this.iotNumberChartConfig.variable = this.makeid(10);
         this.widgets.push(
           JSON.parse(JSON.stringify(this.iotNumberChartConfig))

@@ -6,8 +6,8 @@ const axios = require("axios");
 import Device from "../models/device.js";
 import SaverRule from "../models/emqx_saver_rule.js";
 import Template from "../models/template.js";
-/*import AlarmRule from "../models/emqx_alarm_rule.js";
-import EmqxAuthRule from "../models/emqx_auth.js";*/
+import AlarmRule from "../models/emqx_alarm_rule.js";
+/*import EmqxAuthRule from "../models/emqx_auth.js";*/
 
 //******************
 //**** A P I *******
@@ -38,7 +38,7 @@ router.get("/device", checkAuth, async (req, res) => {
     const templates = await getTemplates(userId);
 
     //get alarm rules
-    //const alarmRules = await getAlarmRules(userId);
+    const alarmRules = await getAlarmRules(userId);
 
     
     //saver rules to -> devices
@@ -49,9 +49,9 @@ router.get("/device", checkAuth, async (req, res) => {
       devices[index].template = templates.filter(
         template => template._id == device.templateId
       )[0];
-      /*devices[index].alarmRules = alarmRules.filter(
+      devices[index].alarmRules = alarmRules.filter(
         alarmRule => alarmRule.dId == device.dId
-      );*/
+      );
     });
 
     const response = {
@@ -284,16 +284,25 @@ async function createSaverRule(userId, dId, status) {
     const rawsql =
       'SELECT topic, payload FROM "' + topic + '" WHERE payload.save = 1';
 
+    const body = "{\"userId\":\"" + userId + "\",\"payload\":${payload},\"topic\":\"${topic}\"}";
+
     var newRule = {
       name: "data_to_webserver",
       sql: rawsql,
       //sql: "SELECT * FROM \"test/topic\" WHERE payload.x = 1",
       actions: [
-        "webhook:" + global.saverResource.name,
+        //"webhook:" + global.saverResource.name
+        {
+          "function":"republish",
+          "args":{
+            "payload": body,
+            "topic": "web_hook/saver_Rule"
+          }
+        }
       ],
       enable: status,
       description: "SAVER-RULE",
-      metadata: {},
+      metadata: {}
     };
 
     /*var newRule = {
@@ -325,6 +334,35 @@ async function createSaverRule(userId, dId, status) {
         emqxRuleId: res.data.id,
         status: status,
       });
+      
+      /*
+      //update webhook resource body after create emqx rule
+      const update_url = "http://localhost:18083/api/v5/bridges/webhook:" + global.saverResource.name;
+      console.log(update_url);
+      const update_body = {
+        body: "{\"userId\":\"" + userId + "\",\"payload\":${payload},\"topic\":\"${topic}\"}",
+        connect_timeout: "15s",
+        enable: true,
+        enable_pipelining: 100,
+        local_topic: "emqx_webhook/#",
+        max_retries: 3,
+        method: "post",
+        name: "saver-webhook",
+        pool_size: 4,
+        pool_type: "random",
+        request_timeout: "15s",
+        ssl: {
+          "enable": false
+        },
+        headers: { 
+            'content-type': 'application/json',
+            token: "121212"
+        },
+        type: "webhook",
+        url: "http://localhost:3001/api/saver-webhook"
+      };
+      await axios.put(update_url, update_body, auth);
+      */
       
       return true;
     } else {

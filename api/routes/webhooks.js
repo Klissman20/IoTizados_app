@@ -7,9 +7,9 @@ const colors = require("colors");
 
 import Data from "../models/data.js";
 import Device from "../models/device.js";
+import AlarmRule from "../models/emqx_alarm_rule.js";
+import Notification from "../models/notifications.js";
 //import EmqxAuthRule from "../models/emqx_auth.js";
-//import Notification from "../models/notifications.js";
-//import AlarmRule from "../models/emqx_alarm_rule.js";
 //import Template from "../models/template.js";
 
 var client;
@@ -27,13 +27,12 @@ router.post("/saver-webhook", async (req, res) => {
       return;
     }
 
-    const data = req.body;
+    const data = req.body.payload;
 
-    //const dataa = JSON.parse(JSON.stringify(data));
     console.log(data);
 
     const splittedTopic = data.topic.split("/");
-    const userId = splittedTopic[0];
+    const userId = data.userId;
     const dId = splittedTopic[1];
     const variable = splittedTopic[2];
 
@@ -59,7 +58,52 @@ router.post("/saver-webhook", async (req, res) => {
   }
 });
 
-/*
+
+//ALARMS WEBHOOK
+router.post("/alarm-webhook", async (req, res) => {
+  try {
+    if (req.headers.token != "121212") {
+      res.status(404).json();
+      return;
+    }
+
+    res.status(200).json();
+
+    const incomingAlarm = req.body.payload;
+
+    //console.log(incomingAlarm);
+    
+    updateAlarmCounter(incomingAlarm.emqxRuleId);
+    
+    const lastNotif = await Notification.find({
+      dId: incomingAlarm.dId,
+      emqxRuleId: incomingAlarm.emqxRuleId
+    })
+      .sort({ time: -1 }) //metodo para consultar y obtener la ultima notificacion 
+      .limit(1);
+
+    if (lastNotif == 0) {
+      console.log("FIRST TIME ALARM");
+      saveNotifToMongo(incomingAlarm);
+      sendMqttNotif(incomingAlarm);
+    } else {
+      //se calcula el tiempo transcurrido entre la ultima notificacion y la nueva
+      const lastNotifToNowMins = (Date.now() - lastNotif[0].time) / 1000 / 60; 
+
+      if (lastNotifToNowMins > incomingAlarm.triggerTime) {
+        console.log("TRIGGERED");
+        saveNotifToMongo(incomingAlarm);
+        sendMqttNotif(incomingAlarm);
+      }
+    }
+    
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json();
+  }
+});
+
+
 //DEVICE CREDENTIALS WEBHOOK
 router.post("/getdevicecredentials", async (req, res) => {
     try {
@@ -118,46 +162,6 @@ router.post("/getdevicecredentials", async (req, res) => {
       res.sendStatus(500);
     }
   }); 
-
-//ALARMS WEBHOOK
-router.post("/alarm-webhook", async (req, res) => {
-  try {
-    if (req.headers.token != process.env.EMQX_API_TOKEN) {
-      res.status(404).json();
-      return;
-    }
-
-    res.status(200).json();
-
-    const incomingAlarm = req.body;
-
-    updateAlarmCounter(incomingAlarm.emqxRuleId);
-
-    const lastNotif = await Notification.find({
-      dId: incomingAlarm.dId,
-      emqxRuleId: incomingAlarm.emqxRuleId
-    })
-      .sort({ time: -1 })
-      .limit(1);
-
-    if (lastNotif == 0) {
-      console.log("FIRST TIME ALARM");
-      saveNotifToMongo(incomingAlarm);
-      sendMqttNotif(incomingAlarm);
-    } else {
-      const lastNotifToNowMins = (Date.now() - lastNotif[0].time) / 1000 / 60;
-
-      if (lastNotifToNowMins > incomingAlarm.triggerTime) {
-        console.log("TRIGGERED");
-        saveNotifToMongo(incomingAlarm);
-        sendMqttNotif(incomingAlarm);
-      }
-    }
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json();
-  }
-});
 
 //GET NOTIFICATIONS
 router.get("/notifications", checkAuth, async (req, res) => {
@@ -282,7 +286,8 @@ async function getDeviceMqttCredentials(dId, userId) {
 }
 
 function startMqttClient() {
-  const options = {
+  
+  /*const options = {
     port: 1883,
     host: process.env.EMQX_API_HOST,
     clientId:
@@ -295,9 +300,28 @@ function startMqttClient() {
     protocolVersion: 3,
     clean: true,
     encoding: "utf8"
+  };*/
+
+  //MQTT 5.0
+  const options = {
+    wsOptions: {
+      port: 1883,
+      host: "localhost"
+    },
+    clientId:
+      "webhook_superuser" + Math.round(Math.random() * (0 - 10000) * -1),
+    username: "superuser",
+    password: "superuser",
+    keepalive: 60,
+    reconnectPeriod: 5000,
+    protocolId: "MQTT",
+    protocolVersion: 4,
+    clean: true,
+    encoding: "utf8"
   };
 
-  client = mqtt.connect("mqtt://" + process.env.EMQX_API_HOST, options);
+  //client = mqtt.connect("mqtt://" + process.env.EMQX_API_HOST, options);
+  client = mqtt.connect("mqtt://localhost", options);
 
   client.on("connect", function() {
     console.log("MQTT CONNECTION -> SUCCESS;".green);
@@ -310,10 +334,11 @@ function startMqttClient() {
   });
 
   client.on("error", error => {
-    console.log("MQTT CONNECIONT FAIL -> ");
+    console.log("MQTT CONNECTION FAIL -> ");
     console.log(error);
   });
 }
+
 
 function sendMqttNotif(notif) {
   const topic = notif.userId + "/dummy-did/dummy-var/notif";
@@ -373,8 +398,9 @@ function makeid(length) {
   return result;
 }
 
+
 setTimeout(() => {
   startMqttClient();
 }, 3000);
-*/
+
 module.exports = router;
