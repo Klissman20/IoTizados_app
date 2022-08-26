@@ -123,7 +123,7 @@ router.delete("/device", checkAuth, async (req, res) => {
     await deleteAllAlarmRules(userId, dId);
 
     //deleting all posible mqtt device credentials
-    //await deleteMqttDeviceCredentials(dId);
+    await deleteMqttDeviceCredentials(dId);
 
     //deleting device
     const result = await Device.deleteOne({ userId: userId, dId: dId });

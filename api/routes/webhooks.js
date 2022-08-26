@@ -9,8 +9,8 @@ import Data from "../models/data.js";
 import Device from "../models/device.js";
 import AlarmRule from "../models/emqx_alarm_rule.js";
 import Notification from "../models/notifications.js";
-//import EmqxAuthRule from "../models/emqx_auth.js";
-//import Template from "../models/template.js";
+import EmqxAuthRule from "../models/emqx_auth.js";
+import Template from "../models/template.js";
 
 var client;
 
@@ -103,7 +103,7 @@ router.post("/alarm-webhook", async (req, res) => {
   }
 });
 
-/*
+
 //DEVICE CREDENTIALS WEBHOOK
 router.post("/getdevicecredentials", async (req, res) => {
     try {
@@ -161,7 +161,7 @@ router.post("/getdevicecredentials", async (req, res) => {
       console.log(error);
       res.sendStatus(500);
     }
-  }); */
+  });
 
 //GET NOTIFICATIONS
 router.get("/notifications", checkAuth, async (req, res) => {

@@ -48,7 +48,7 @@ router.get('/get-small-charts-data', checkAuth, async (req, res) => {
 
   try {
 
-    console.log(req);
+    //console.log(req);
     const userId = req.userData._id;
     const chartTimeAgo = req.query.chartTimeAgo;
     const dId = req.query.dId;
