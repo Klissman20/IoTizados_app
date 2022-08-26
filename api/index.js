@@ -24,7 +24,7 @@ app.use("/api", require("./routes/templates.js"));
 app.use("/api", require("./routes/webhooks.js"));
 app.use("/api", require("./routes/emqxapi.js"));
 app.use("/api", require("./routes/alarms.js"));
-//app.use("/api", require("./routes/dataprovider.js"));
+app.use("/api", require("./routes/dataprovider.js"));
 
 module.exports = app;
 

@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-//const { checkAuth } = require("../middlewares/authentication.js");
+const { checkAuth } = require("../middlewares/authentication.js");
 
 //models import
 import User from "../models/user.js";
-//import EmqxAuthRule from "../models/emqx_auth.js";
+import EmqxAuthRule from "../models/emqx_auth.js";
 
 //POST -> req.body
 //GET -> req.query
@@ -96,9 +96,6 @@ router.post("/register", async (req, res) => {
   }
 });
 
-
-/*
-
 //GET MQTT WEB CREDENTIALS
 router.post("/getmqttcredentials", checkAuth, async (req, res) => {
   try {
@@ -109,7 +106,7 @@ router.post("/getmqttcredentials", checkAuth, async (req, res) => {
     const response = {
       status: "success",
       username: credentials.username,
-      password: credentials.password
+      pass: credentials.pass
     };
 
     res.json(response);
@@ -137,14 +134,12 @@ router.post(
   async (req, res) => {
     try {
       const userId = req.userData._id;
-      const credentials = await getWebUserMqttCredentialsForReconnection(
-        userId
-      );
+      const credentials = await getWebUserMqttCredentialsForReconnection(userId);
 
       const response = {
         status: "success",
         username: credentials.username,
-        password: credentials.password
+        pass: credentials.pass
       };
 
       console.log(response);
@@ -152,7 +147,7 @@ router.post(
 
       setTimeout(() => {
         getWebUserMqttCredentials(userId);
-      }, 15000);
+      }, 10000);
     } catch (error) {
       console.log(error);
     }
@@ -163,9 +158,6 @@ router.post(
 //**** FUNCTIONS *******
 //**********************
 
-
-
-
 // mqtt credential types: "user", "device", "superuser"
 async function getWebUserMqttCredentials(userId) {
   try {
@@ -175,9 +167,13 @@ async function getWebUserMqttCredentials(userId) {
       const newRule = {
         userId: userId,
         username: makeid(10),
-        password: makeid(10),
-        publish: [userId + "/#"],
-        subscribe: [userId + "/#"],
+        pass: makeid(10),
+        is: "false",
+        action: "all",
+        permission: "allow",
+        topics: [userId + "/#"],
+        //publish: [userId + "/#"],
+        //subscribe: [userId + "/#"],
         type: "user",
         time: Date.now(),
         updatedTime: Date.now()
@@ -187,7 +183,7 @@ async function getWebUserMqttCredentials(userId) {
 
       const toReturn = {
         username: result.username,
-        password: result.password
+        pass: result.pass
       };
 
       return toReturn;
@@ -201,7 +197,7 @@ async function getWebUserMqttCredentials(userId) {
       {
         $set: {
           username: newUserName,
-          password: newPassword,
+          pass: newPassword,
           updatedTime: Date.now()
         }
       }
@@ -213,7 +209,7 @@ async function getWebUserMqttCredentials(userId) {
     if (result.n == 1 && result.ok == 1) {
       return {
         username: newUserName,
-        password: newPassword
+        pass: newPassword
       };
     } else {
       return false;
@@ -231,7 +227,7 @@ async function getWebUserMqttCredentialsForReconnection(userId) {
     if (rule.length == 1) {
       const toReturn = {
         username: rule[0].username,
-        password: rule[0].password
+        pass: rule[0].pass
       };
       return toReturn;
     }
@@ -251,8 +247,5 @@ function makeid(length) {
   }
   return result;
 }
-
-
-*/
 
 module.exports = router;

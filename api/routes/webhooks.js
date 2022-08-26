@@ -103,7 +103,7 @@ router.post("/alarm-webhook", async (req, res) => {
   }
 });
 
-
+/*
 //DEVICE CREDENTIALS WEBHOOK
 router.post("/getdevicecredentials", async (req, res) => {
     try {
@@ -161,7 +161,7 @@ router.post("/getdevicecredentials", async (req, res) => {
       console.log(error);
       res.sendStatus(500);
     }
-  }); 
+  }); */
 
 //GET NOTIFICATIONS
 router.get("/notifications", checkAuth, async (req, res) => {
@@ -286,7 +286,7 @@ async function getDeviceMqttCredentials(dId, userId) {
 }
 
 function startMqttClient() {
-  
+  //MQTT 3
   /*const options = {
     port: 1883,
     host: process.env.EMQX_API_HOST,
@@ -315,9 +315,9 @@ function startMqttClient() {
     keepalive: 60,
     reconnectPeriod: 5000,
     protocolId: "MQTT",
-    protocolVersion: 4,
+    protocolVersion: 5,
     clean: true,
-    encoding: "utf8"
+    //encoding: "utf8"
   };
 
   //client = mqtt.connect("mqtt://" + process.env.EMQX_API_HOST, options);

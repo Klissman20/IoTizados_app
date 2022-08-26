@@ -138,6 +138,7 @@
 
             this.getNow();
             this.updateColorClass();
+            this.getChartData();
 
         },
         beforeDestroy() {
@@ -183,7 +184,7 @@
                     headers: {
                         token: $nuxt.$store.state.auth.token,
                     },
-                    params: { dId: this.config.selectedDevice.dId, variable: this.config.variable, chartTimeAgo: this.config.chartTimeAgo }
+                    params: { dId: this.config.selectedDevice.dId, variable: this.config.variable, chartTimeAgo: this.config.chartTime }
                 }
 
                 this.$axios.get("/get-small-charts-data", axiosHeaders)

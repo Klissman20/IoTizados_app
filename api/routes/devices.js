@@ -120,7 +120,7 @@ router.delete("/device", checkAuth, async (req, res) => {
     await deleteSaverRule(dId);
 
     //deleting all posible alarm rules
-    //await deleteAllAlarmRules(userId, dId);
+    await deleteAllAlarmRules(userId, dId);
 
     //deleting all posible mqtt device credentials
     //await deleteMqttDeviceCredentials(dId);
@@ -428,11 +428,14 @@ async function deleteAllAlarmRules(userId, dId) {
     if (rules.length > 0) {
       asyncForEach(rules, async (rule) => {
         const url =
+          "http://localhost:18083/api/v5/rules/" + rule.emqxRuleId;
+        const res = await axios.delete(url, auth);
+        /*const url =
           "http://" +
           process.env.EMQX_API_HOST +
           ":8085/api/v4/rules/" +
           rule.emqxRuleId;
-        const res = await axios.delete(url, auth);
+        const res = await axios.delete(url, auth);*/
       });
 
       await AlarmRule.deleteMany({ userId: userId, dId: dId });

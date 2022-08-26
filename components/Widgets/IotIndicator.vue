@@ -20,7 +20,11 @@
         mounted(){
             //TOPIC: /userId/dId/{variable}/sdata    sdata:inbound    actdata:outbound
             const topic = this.config.userId + "/" + this.config.selectedDevice.dId +  "/" + this.config.variable + "/sdata"
-            this.$nuxt.$on(topic, this.processReceiverData)//Evento de escucha .$on
+            this.$nuxt.$on(topic, data => {
+                console.log(data);
+                console.log("received");
+                this.value = data.value;
+            });//Evento de escucha .$on
         },
         beforeDestroy(){
             this.$nuxt.$off(this.config.userId + "/" + this.config.selectedDevice.dId +  "/" + this.config.variable + "/sdata", this.processReceiverData);
