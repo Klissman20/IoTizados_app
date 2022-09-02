@@ -36,19 +36,26 @@
               style="width: 100%"
             >
               <el-option
-                v-for="template, index in templates" :key="template._id"
+                v-for="(template, index) in templates"
+                :key="template._id"
                 class="text-dark"
                 :label="template.name"
                 :value="index"
               ></el-option>
-              
             </el-select>
           </div>
         </div>
 
         <div class="row pull-right">
           <div class="col-12">
-            <base-button round type="info" class="mb-3" size="lg" @click="createNewDevice()">ADD</base-button>
+            <base-button
+              round
+              type="info"
+              class="mb-3"
+              size="lg"
+              @click="createNewDevice()"
+              >ADD</base-button
+            >
           </div>
         </div>
       </card>
@@ -94,16 +101,16 @@
                 ></i>
               </el-tooltip>
               <!--Switch button-->
-              
-                <base-switch
-                  @click="updateSaverRuleStatus(row.saverRule)"
-                  :value="row.saverRule.status"
-                  type="primary"
-                  on-text="On"
-                  off-text="Off"
-                >
-                </base-switch>
-              
+
+              <base-switch
+                @click="updateSaverRuleStatus(row.saverRule)"
+                :value="row.saverRule.status"
+                type="primary"
+                on-text="On"
+                off-text="Off"
+              >
+              </base-switch>
+
               <!--Edit button-->
               <el-tooltip
                 content="Edit"
@@ -138,7 +145,7 @@
       </card>
     </div>
 
-    <Json :value="$store.state.devices"></Json>
+    <!--<Json :value="$store.state.devices"></Json>-->
   </div>
 </template>
 
@@ -148,7 +155,7 @@ import { Table, TableColumn } from "element-ui";
 import { Select, Option } from "element-ui";
 
 export default {
-  middleware: 'authenticated',
+  middleware: "authenticated",
   components: {
     Json,
     [Table.name]: Table,
@@ -164,58 +171,52 @@ export default {
         name: "",
         dId: "",
         templateId: "",
-        templateName: ""
-      }
+        templateName: "",
+      },
     };
   },
   mounted() {
     this.getTemplates();
   },
   methods: {
-
     updateSaverRuleStatus(rule) {
-      
       var ruleCopy = JSON.parse(JSON.stringify(rule));
 
       ruleCopy.status = !ruleCopy.status;
 
       //console.log(ruleCopy.status);
 
-      const toSend = { 
-        rule: ruleCopy 
+      const toSend = {
+        rule: ruleCopy,
       };
 
       const axiosHeaders = {
         headers: {
-          token: this.$store.state.auth.token
-        }
+          token: this.$store.state.auth.token,
+        },
       };
 
       this.$axios
         .put("/saver-rule", toSend, axiosHeaders)
-        .then(res => {
-
-
+        .then((res) => {
           if (res.data.status == "success") {
-
             this.$store.dispatch("getDevices");
 
             this.$notify({
               type: "success",
               icon: "tim-icons icon-check-2",
-              message: " Device Saver Status Updated"
+              message: " Device Saver Status Updated",
             });
-
           }
 
           return;
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e);
           this.$notify({
             type: "danger",
             icon: "tim-icons icon-alert-circle-exc",
-            message: " Error updating saver rule status"
+            message: " Error updating saver rule status",
           });
           return;
         });
@@ -224,34 +225,34 @@ export default {
     deleteDevice(device) {
       const axiosHeaders = {
         headers: {
-          token: this.$store.state.auth.token
+          token: this.$store.state.auth.token,
         },
         params: {
-          dId: device.dId
-        }
+          dId: device.dId,
+        },
       };
 
       this.$axios
         .delete("/device", axiosHeaders)
-        .then(res => {
+        .then((res) => {
           if (res.data.status == "success") {
             this.$notify({
               type: "success",
               icon: "tim-icons icon-check-2",
-              message: device.name + " deleted!"
+              message: device.name + " deleted!",
             });
           }
-          this.$store.dispatch('getDevices');
+          this.$store.dispatch("getDevices");
           //$nuxt.$emit("time-to-get-devices");
 
           return;
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e);
           this.$notify({
             type: "danger",
             icon: "tim-icons icon-alert-circle-exc",
-            message: " Error deleting " + device.name
+            message: " Error deleting " + device.name,
           });
           return;
         });
@@ -263,7 +264,7 @@ export default {
         this.$notify({
           type: "warning",
           icon: "tim-icons icon-alert-circle-exc",
-          message: " Device Name is Empty :("
+          message: " Device Name is Empty :(",
         });
         return;
       }
@@ -272,7 +273,7 @@ export default {
         this.$notify({
           type: "warning",
           icon: "tim-icons icon-alert-circle-exc",
-          message: " Device ID is Empty :("
+          message: " Device ID is Empty :(",
         });
         return;
       }
@@ -281,32 +282,30 @@ export default {
         this.$notify({
           type: "warning",
           icon: "tim-icons icon-alert-circle-exc",
-          message: " Template must be selected"
+          message: " Template must be selected",
         });
         return;
       }
 
       const axiosHeaders = {
         headers: {
-          token: this.$store.state.auth.token
-        }
+          token: this.$store.state.auth.token,
+        },
       };
 
       //ESCRIBIMOS EL NOMBRE Y EL ID DEL TEMPLATE SELECCIONADO EN EL OBJETO newDevice
-      this.newDevice.templateId = this.templates[
-        this.selectedIndexTemplate
-      ]._id;
-      this.newDevice.templateName = this.templates[
-        this.selectedIndexTemplate
-      ].name;
+      this.newDevice.templateId =
+        this.templates[this.selectedIndexTemplate]._id;
+      this.newDevice.templateName =
+        this.templates[this.selectedIndexTemplate].name;
 
       const toSend = {
-        newDevice: this.newDevice
+        newDevice: this.newDevice,
       };
 
       this.$axios
         .post("/device", toSend, axiosHeaders)
-        .then(res => {
+        .then((res) => {
           if (res.data.status == "success") {
             this.$store.dispatch("getDevices");
 
@@ -317,13 +316,13 @@ export default {
             this.$notify({
               type: "success",
               icon: "tim-icons icon-check-2",
-              message: "Success! Device was added"
+              message: "Success! Device was added",
             });
 
             return;
           }
         })
-        .catch(e => {
+        .catch((e) => {
           if (
             e.response.data.status == "error" &&
             e.response.data.error.errors.dId.kind == "unique"
@@ -332,7 +331,7 @@ export default {
               type: "warning",
               icon: "tim-icons icon-alert-circle-exc",
               message:
-                "The device is already registered in the system. Try another device"
+                "The device is already registered in the system. Try another device",
             });
             return;
           } else {
@@ -346,8 +345,8 @@ export default {
     async getTemplates() {
       const axiosHeaders = {
         headers: {
-          token: this.$store.state.auth.token
-        }
+          token: this.$store.state.auth.token,
+        },
       };
 
       try {
@@ -361,12 +360,12 @@ export default {
         this.$notify({
           type: "danger",
           icon: "tim-icons icon-alert-circle-exc",
-          message: "Error getting templates..."
+          message: "Error getting templates...",
         });
         console.log(error);
         return;
       }
     },
-  }
+  },
 };
 </script>

@@ -7,6 +7,7 @@ const { checkAuth } = require("../middlewares/authentication.js");
 //models import
 import User from "../models/user.js";
 import EmqxAuthRule from "../models/emqx_auth.js";
+import MqttAclRule from "../models/mqtt_acl.js";
 
 //POST -> req.body
 //GET -> req.query
@@ -103,6 +104,18 @@ router.post("/getmqttcredentials", checkAuth, async (req, res) => {
 
     const credentials = await getWebUserMqttCredentials(userId);
 
+    await MqttAclRule.updateOne(
+      { type: "user", userId: userId },
+      {
+        $set: {
+          username: credentials.username,
+          updatedTime: Date.now()
+        }
+      }
+    );
+
+    
+
     const response = {
       status: "success",
       username: credentials.username,
@@ -162,7 +175,7 @@ router.post(
 async function getWebUserMqttCredentials(userId) {
   try {
     var rule = await EmqxAuthRule.find({ type: "user", userId: userId });
-
+    
     if (rule.length == 0) {
       const newRule = {
         userId: userId,
@@ -171,15 +184,26 @@ async function getWebUserMqttCredentials(userId) {
         is: "false",
         action: "all",
         permission: "allow",
-        topics: [userId + "/#"],
+        topics: [userId + "/+/+/sdata", userId + "/+/+/notif", userId + "/+/+/actdata"],
         //publish: [userId + "/#"],
         //subscribe: [userId + "/#"],
         type: "user",
         time: Date.now(),
         updatedTime: Date.now()
       };
-
       const result = await EmqxAuthRule.create(newRule);
+
+      const authzRule = {
+        userId: userId,
+        username: newRule.username,
+        action: "all",
+        permission: "allow",
+        topics: newRule.topics,
+        time: newRule.time,
+        type: "user",
+        updatedTime: newRule.updatedTime
+      };
+      await MqttAclRule.create(authzRule);
 
       const toReturn = {
         username: result.username,
@@ -229,6 +253,16 @@ async function getWebUserMqttCredentialsForReconnection(userId) {
         username: rule[0].username,
         pass: rule[0].pass
       };
+
+      await MqttAclRule.updateOne({  type: "user", userId: userId },
+        {
+          $set: {
+            username: rule[0].username,
+            updatedTime: Date.now()
+          }
+        }
+      );
+
       return toReturn;
     }
   } catch (error) {

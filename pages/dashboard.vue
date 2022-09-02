@@ -7,9 +7,8 @@
         v-for="(widget, index) in $store.state.selectedDevice.template.widgets"
         :key="index"
         :class="[widget.column]"
-      > 
-
-        <Json :value="fixWidget(widget)"></Json>
+      >
+        <!--<Json :value="fixWidget(widget)"></Json>-->
 
         <IotNumberChart
           v-if="widget.widget == 'numberchart'"
@@ -41,7 +40,7 @@ export default {
   middleware: "authenticated",
   name: "Dashboard",
   components: {
-    Json
+    Json,
   },
   data() {
     return {};
@@ -52,8 +51,10 @@ export default {
   methods: {
     fixWidget(widget) {
       var widgetCopy = JSON.parse(JSON.stringify(widget));
-      widgetCopy.selectedDevice.templateName =this.$store.state.selectedDevice.templateName;
-      widgetCopy.selectedDevice.templateId =this.$store.state.selectedDevice.templateId;
+      widgetCopy.selectedDevice.templateName =
+        this.$store.state.selectedDevice.templateName;
+      widgetCopy.selectedDevice.templateId =
+        this.$store.state.selectedDevice.templateId;
       widgetCopy.selectedDevice.dId = this.$store.state.selectedDevice.dId;
       widgetCopy.selectedDevice.name = this.$store.state.selectedDevice.name;
       widgetCopy.userId = this.$store.state.selectedDevice.userId;

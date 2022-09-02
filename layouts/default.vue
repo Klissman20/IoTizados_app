@@ -217,6 +217,8 @@
           this.$store.state.auth.userData._id + "/+/+/sdata";
         const notifSubscribeTopic =
           this.$store.state.auth.userData._id + "/+/+/notif";
+        const actuatorSubscribeTopic = 
+          this.$store.state.auth.userData._id + "/+/+/actdata";
 
         const connectUrl =
           "ws://" + //process.env.mqtt_prefix
@@ -239,13 +241,13 @@
           console.log("Connection succeeded!");
 
           //SDATA SUBSCRIBE
-          this.client.subscribe([deviceSubscribeTopic,notifSubscribeTopic], {qos: 0} , err => {
+          this.client.subscribe([deviceSubscribeTopic,notifSubscribeTopic, actuatorSubscribeTopic], {qos: 0} , err => {
             if (err) {
               console.log("Error in DeviceSubscription");
               return;
             }
             console.log("Device and notify subscription Success");
-            console.log(deviceSubscribeTopic + ", " + notifSubscribeTopic);
+            console.log(deviceSubscribeTopic + ", " + notifSubscribeTopic + ", " + actuatorSubscribeTopic);
           });
 
           /*
@@ -300,7 +302,10 @@
         });
 
         this.$nuxt.$on("mqtt-sender", toSend => {
-          this.client.publish(toSend.topic, JSON.stringify(toSend.msg));  
+          console.log("to_broker");
+          //console.log(toSend.topic);
+          //console.log(toSend.msg);
+          this.client.publish(toSend.topic, JSON.stringify(toSend.msg));
         });
       },
 

@@ -30,7 +30,7 @@ export default {
       this.sending = true;
       setTimeout(() => {
         this.sending = false
-      }, 1000);
+      }, 1500);
 
       const toSend = {
         topic: this.config.userId + "/" + this.config.selectedDevice.dId +  "/" + this.config.variable + "/actdata",
