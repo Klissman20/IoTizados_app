@@ -31,6 +31,10 @@
         ></IotIndicator>
       </div>
     </div>
+
+    <div v-else>
+      Select a device...
+    </div>
   </div>
 </template>
 

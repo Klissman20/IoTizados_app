@@ -292,7 +292,6 @@
               this.$store.dispatch("getNotifications");
               return;
             } else if (msgType == "sdata") {
-              console.log("emitiendo por nuxt");
               this.$nuxt.$emit(topic, JSON.parse(message.toString()));
               return;
             }
@@ -302,9 +301,6 @@
         });
 
         this.$nuxt.$on("mqtt-sender", toSend => {
-          console.log("to_broker");
-          //console.log(toSend.topic);
-          //console.log(toSend.msg);
           this.client.publish(toSend.topic, JSON.stringify(toSend.msg));
         });
       },

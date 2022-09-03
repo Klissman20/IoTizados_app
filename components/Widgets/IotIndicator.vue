@@ -14,27 +14,40 @@
         props: ['config'],
         data() {
             return {
-                value: true
+                value: true,
+                topic: "",
+                props: ['config']
             }
         },
-        mounted(){
-            //TOPIC: /userId/dId/{variable}/sdata    sdata:inbound    actdata:outbound
-            const topic = this.config.userId + "/" + this.config.selectedDevice.dId +  "/" + this.config.variable + "/sdata"
-            this.$nuxt.$on(topic, data => {
-                console.log(data);
-                console.log("received");
-                this.value = data.value;
-            });//Evento de escucha .$on
-        },
         beforeDestroy(){
-            this.$nuxt.$off(this.config.userId + "/" + this.config.selectedDevice.dId +  "/" + this.config.variable + "/sdata", this.processReceiverData);
+            this.$nuxt.$off(this.topic);
+        },
+        watch: {
+            config:{
+                immediate: true,
+                deep: true,
+                handler(){
+                    setTimeout(() => {
+                        this.value = false;
+                        this.$nuxt.$off(this.topic);
+
+                        //usrId/dId/uniquestr/sdata
+                        this.topic = this.config.userId + "/" + this.config.selectedDevice.dId +  "/" + this.config.variable + "/sdata";
+                        this.$nuxt.$on(this.topic, this.processReceiverData);//Evento de escucha .$on
+                    }, 300);
+                }
+            }
         },
         methods: {
 
             processReceiverData(data){
-                console.log(data);
-                console.log("received");
-                this.value = data.value;
+                try {
+                    console.log("received");
+                    console.log(data);
+                    this.value = data.value;
+                } catch (error) {
+                    console.log(error);
+                }
             },
 
             getIconColorClass (){

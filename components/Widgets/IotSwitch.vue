@@ -28,35 +28,48 @@
         
         data() {
             return {
-                value: true
+                value: false,
+                vIcon: false,
+                topic: ""
             };
         },
         watch: {
-            config: {
+            config:{
                 immediate: true,
                 deep: true,
-                handler() {
+                handler(){
+                    setTimeout(() => {
+                        this.value = false;
+                        this.$nuxt.$off(this.topic);
 
+                        //usrId/dId/uniquestr/sdata
+                        this.topic = this.config.userId + "/" + this.config.selectedDevice.dId +  "/" + this.config.variable + "/sdata";
+                        this.$nuxt.$on(this.topic, this.processReceiverData);//Evento de escucha .$on
+                    }, 300);
                 }
             }
         },
-
-        mounted() {
-
-
-
-        },
         beforeDestroy() {
-
+            this.$nuxt.$off(this.topic);
         },
         methods: {
 
+            processReceiverData(data){
+                try {
+                    console.log("received");
+                    console.log(data);
+                    this.vIcon = data.value;
+                    this.value = data.value;
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+
             getIconColorClass() {
                 //para apagar el icono 
-                if (!this.value){
+                if (!this.vIcon){
                     return "text-dark";
                 }
-
                 if (this.config.class == "success") {
                     return "text-success";
                 }
@@ -74,20 +87,22 @@
                 }
             },
 
-
             sendValue(){
+                this.sending = true;
+                setTimeout(() => {
+                    this.sending = false
+                }, 1500);
 
                 const toSend = {
-                    topic: this.config.userId + '/' + this.config.selectedDevice.dId + '/' + this.config.variable + '/actdata',
+                    topic: this.config.userId + "/" + this.config.selectedDevice.dId +  "/" + this.config.variable + "/actdata",
                     msg: {
-                        value: this.value
+                    value: this.value
                     }
                 };
 
-                $nuxt.$emit('mqtt-sender', toSend);
+                this.$nuxt.$emit('mqtt-sender', toSend);
 
             }
-
 
         }
     };

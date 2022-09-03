@@ -799,7 +799,7 @@ export default {
         },
         variableFullName: "Pump",
         variable: "uniquestr",
-        variableType: "output",
+        variableType: "inout",
         icon: "fa-sun",
         column: "col-6",
         widget: "switch",

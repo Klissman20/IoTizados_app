@@ -182,11 +182,6 @@ async function getWebUserMqttCredentials(userId) {
         username: makeid(10),
         pass: makeid(10),
         is: "false",
-        action: "all",
-        permission: "allow",
-        topics: [userId + "/+/+/sdata", userId + "/+/+/notif", userId + "/+/+/actdata"],
-        //publish: [userId + "/#"],
-        //subscribe: [userId + "/#"],
         type: "user",
         time: Date.now(),
         updatedTime: Date.now()
@@ -229,7 +224,6 @@ async function getWebUserMqttCredentials(userId) {
 
     // update response example
     //{ n: 1, nModified: 1, ok: 1 }
-
     if (result.n == 1 && result.ok == 1) {
       return {
         username: newUserName,

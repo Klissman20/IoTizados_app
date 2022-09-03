@@ -7,7 +7,8 @@ import Device from "../models/device.js";
 import SaverRule from "../models/emqx_saver_rule.js";
 import Template from "../models/template.js";
 import AlarmRule from "../models/emqx_alarm_rule.js";
-/*import EmqxAuthRule from "../models/emqx_auth.js";*/
+import MqttAclRule from "../models/mqtt_acl.js";
+import EmqxAuthRule from "../models/emqx_auth.js";
 
 //******************
 //**** A P I *******
@@ -461,7 +462,7 @@ async function asyncForEach(array, callback) {
 async function deleteMqttDeviceCredentials(dId) {
   try {
     await EmqxAuthRule.deleteMany({ dId: dId, type: "device" });
-
+    await MqttAclRule.deleteMany({dId: dId, type: "device"});
     return true;
   } catch (error) {
     console.log(error);

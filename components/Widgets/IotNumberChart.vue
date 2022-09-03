@@ -40,7 +40,6 @@
                 nowTime: Date.now(),
                 isMounted: false,
                 topic: "",
-
                 chartOptions: {
                     credits: {
                         enabled: false
@@ -135,11 +134,8 @@
             }
         },
         mounted() {
-
             this.getNow();
             this.updateColorClass();
-            this.getChartData();
-
         },
         beforeDestroy() {
             this.$nuxt.$off(this.topic + "/sdata");

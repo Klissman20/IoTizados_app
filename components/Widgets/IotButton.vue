@@ -21,9 +21,6 @@ export default {
       sending: false
     };
   },
-  mounted() {
-    
-  },
   methods: {
 
     sendValue(){
