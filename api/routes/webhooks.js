@@ -257,7 +257,7 @@ async function getDeviceMqttCredentials(dId, userId) {
         username: newRule.username,
         action: "all",
         permission: "allow",
-        topics: newRule.topics,
+        topics: [userId + "/" + dId  + "/+/sdata", userId + "/" + dId  + "/+/actdata"],
         time: newRule.time,
         type: "device",
         updatedTime: newRule.updatedTime

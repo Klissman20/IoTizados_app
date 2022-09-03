@@ -193,7 +193,7 @@ async function getWebUserMqttCredentials(userId) {
         username: newRule.username,
         action: "all",
         permission: "allow",
-        topics: newRule.topics,
+        topics: [userId + "/#"],
         time: newRule.time,
         type: "user",
         updatedTime: newRule.updatedTime
