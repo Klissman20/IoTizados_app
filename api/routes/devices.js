@@ -17,7 +17,7 @@ import EmqxAuthRule from "../models/emqx_auth.js";
 const auth = {
   auth: {
     username: "admin",
-    password: "dashpass",
+    password: process.env.EMQX_DEFAULT_APPLICATION_SECRET,
   },
 };
 
@@ -29,7 +29,7 @@ router.get("/device", checkAuth, async (req, res) => {
     //get devices
     var devices = await Device.find({ userId: userId });
 
-    //mongoose array to js array 
+    //mongoose array to js array
     devices = JSON.parse(JSON.stringify(devices));
 
     //get saver rules
@@ -41,17 +41,16 @@ router.get("/device", checkAuth, async (req, res) => {
     //get alarm rules
     const alarmRules = await getAlarmRules(userId);
 
-    
     //saver rules to -> devices
     devices.forEach((device, index) => {
       devices[index].saverRule = saverRules.filter(
-        saverRule => saverRule.dId == device.dId
+        (saverRule) => saverRule.dId == device.dId
       )[0];
       devices[index].template = templates.filter(
-        template => template._id == device.templateId
+        (template) => template._id == device.templateId
       )[0];
       devices[index].alarmRules = alarmRules.filter(
-        alarmRule => alarmRule.dId == device.dId
+        (alarmRule) => alarmRule.dId == device.dId
       );
     });
 
@@ -195,7 +194,6 @@ router.put("/device", checkAuth, async (req, res) => {
   }
 });
 
-
 //SAVER-RULE STATUS UPDATER
 router.put("/saver-rule", checkAuth, async (req, res) => {
   try {
@@ -206,7 +204,7 @@ router.put("/saver-rule", checkAuth, async (req, res) => {
     await updateSaverRuleStatus(rule.emqxRuleId, rule.status);
 
     const response = {
-      status: "success"
+      status: "success",
     };
 
     res.json(response);
@@ -214,8 +212,6 @@ router.put("/saver-rule", checkAuth, async (req, res) => {
     console.log(error);
   }
 });
-
-
 
 //**********************
 //**** FUNCTIONS *******
@@ -285,7 +281,8 @@ async function createSaverRule(userId, dId, status) {
     const rawsql =
       'SELECT topic, payload FROM "' + topic + '" WHERE payload.save = 1';
 
-    const body = "{\"userId\":\"" + userId + "\",\"payload\":${payload},\"topic\":\"${topic}\"}";
+    const body =
+      '{"userId":"' + userId + '","payload":${payload},"topic":"${topic}"}';
 
     var newRule = {
       name: "data_to_webserver",
@@ -294,16 +291,16 @@ async function createSaverRule(userId, dId, status) {
       actions: [
         //"webhook:" + global.saverResource.name
         {
-          "function":"republish",
-          "args":{
-            "payload": body,
-            "topic": "web_hook/saver_Rule"
-          }
-        }
+          function: "republish",
+          args: {
+            payload: body,
+            topic: "web_hook/saver_Rule",
+          },
+        },
       ],
       enable: status,
       description: "SAVER-RULE",
-      metadata: {}
+      metadata: {},
     };
 
     /*var newRule = {
@@ -335,7 +332,7 @@ async function createSaverRule(userId, dId, status) {
         emqxRuleId: res.data.id,
         status: status,
       });
-      
+
       /*
       //update webhook resource body after create emqx rule
       const update_url = "http://localhost:18083/api/v5/bridges/webhook:" + global.saverResource.name;
@@ -364,7 +361,7 @@ async function createSaverRule(userId, dId, status) {
       };
       await axios.put(update_url, update_body, auth);
       */
-      
+
       return true;
     } else {
       return false;
@@ -428,8 +425,7 @@ async function deleteAllAlarmRules(userId, dId) {
 
     if (rules.length > 0) {
       asyncForEach(rules, async (rule) => {
-        const url =
-          "http://localhost:18083/api/v5/rules/" + rule.emqxRuleId;
+        const url = "http://localhost:18083/api/v5/rules/" + rule.emqxRuleId;
         const res = await axios.delete(url, auth);
         /*const url =
           "http://" +
@@ -462,7 +458,7 @@ async function asyncForEach(array, callback) {
 async function deleteMqttDeviceCredentials(dId) {
   try {
     await EmqxAuthRule.deleteMany({ dId: dId, type: "device" });
-    await MqttAclRule.deleteMany({dId: dId, type: "device"});
+    await MqttAclRule.deleteMany({ dId: dId, type: "device" });
     return true;
   } catch (error) {
     console.log(error);

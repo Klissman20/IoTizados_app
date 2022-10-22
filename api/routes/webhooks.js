@@ -24,7 +24,7 @@ var oldUserId;
 //SAVER WEBHOOK
 router.post("/saver-webhook", async (req, res) => {
   try {
-    if (req.headers.token != "121212") {
+    if (req.headers.token != process.env.EMQX_API_TOKEN) {
       res.status(404).json();
       return;
     }
@@ -63,7 +63,7 @@ router.post("/saver-webhook", async (req, res) => {
 //ALARMS WEBHOOK
 router.post("/alarm-webhook", async (req, res) => {
   try {
-    if (req.headers.token != "121212") {
+    if (req.headers.token != process.env.EMQX_API_TOKEN) {
       res.status(404).json();
       return;
     }
@@ -125,8 +125,8 @@ router.post("/getdevicecredentials", async (req, res) => {
       {
         $set: {
           username: credentials.username,
-          updatedTime: Date.now()
-        }
+          updatedTime: Date.now(),
+        },
       }
     );
 
@@ -257,10 +257,13 @@ async function getDeviceMqttCredentials(dId, userId) {
         username: newRule.username,
         action: "all",
         permission: "allow",
-        topics: [userId + "/" + dId  + "/+/sdata", userId + "/" + dId  + "/+/actdata"],
+        topics: [
+          userId + "/" + dId + "/+/sdata",
+          userId + "/" + dId + "/+/actdata",
+        ],
         time: newRule.time,
         type: "device",
-        updatedTime: newRule.updatedTime
+        updatedTime: newRule.updatedTime,
       };
       await MqttAclRule.create(authzRule);
 
@@ -324,12 +327,12 @@ function startMqttClient() {
   const options = {
     wsOptions: {
       port: 1883,
-      host: "localhost",
+      host: process.env.EMQX_NODE_HOST,
     },
     clientId:
       "webhook_superuser" + Math.round(Math.random() * (0 - 10000) * -1),
-    username: "superuser",
-    password: "superuser",
+    username: process.env.EMQX_NODE_SUPERUSER_USER,
+    password: process.env.EMQX_NODE_SUPERUSER_PASS,
     keepalive: 60,
     reconnectPeriod: 5000,
     protocolId: "MQTT",
@@ -338,8 +341,7 @@ function startMqttClient() {
     //encoding: "utf8"
   };
 
-  //client = mqtt.connect("mqtt://" + process.env.EMQX_API_HOST, options);
-  client = mqtt.connect("mqtt://localhost", options);
+  client = mqtt.connect("mqtt://" + process.env.EMQX_NODE_HOST, options);
 
   client.on("connect", function () {
     console.log("MQTT CONNECTION -> SUCCESS;".green);

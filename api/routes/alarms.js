@@ -9,8 +9,7 @@ import AlarmRule from "../models/emqx_alarm_rule.js";
 const auth = {
   auth: {
     username: "admin",
-    password: "dashpass"
-    //password: process.env.EMQX_DEFAULT_APPLICATION_SECRET,
+    password: process.env.EMQX_DEFAULT_APPLICATION_SECRET,
   },
 };
 
@@ -101,7 +100,6 @@ router.delete("/alarm-rule", checkAuth, async (req, res) => {
 //CREATE ALARM
 async function createAlarmRule(newAlarm) {
   try {
-
     const url = "http://localhost:18083/api/v5/rules";
     //const url = "http://" + process.env.EMQX_API_HOST + ":8085/api/v4/rules";
 
@@ -118,28 +116,30 @@ async function createAlarmRule(newAlarm) {
       newAlarm.value +
       " AND is_not_null(payload.value)";
 
-      const body = "{\"userId\":\"" + newAlarm.userId + "\",\"payload\":${payload},\"topic\":\"${topic}\"}";
+    const body =
+      '{"userId":"' +
+      newAlarm.userId +
+      '","payload":${payload},"topic":"${topic}"}';
 
-      var newRule = {
-        name: "data_to_webserver_alarm",
-        sql: rawsql,
-        //sql: "SELECT * FROM \"test/topic\" WHERE payload.x = 1",
-        actions: [
-          //"webhook:" + global.alarmResource.name,
-          {
-            "function":"republish",
-            "args":{
-              "payload": body,
-              "topic": "web_hook/alarm_Rule"
-            }
-          }
-        ],
-        description: "ALARM-RULE",
-        enable: newAlarm.status
-      };
-    
-    
-      /*var newRule = {
+    var newRule = {
+      name: "data_to_webserver_alarm",
+      sql: rawsql,
+      //sql: "SELECT * FROM \"test/topic\" WHERE payload.x = 1",
+      actions: [
+        //"webhook:" + global.alarmResource.name,
+        {
+          function: "republish",
+          args: {
+            payload: body,
+            topic: "web_hook/alarm_Rule",
+          },
+        },
+      ],
+      description: "ALARM-RULE",
+      enable: newAlarm.status,
+    };
+
+    /*var newRule = {
       rawsql: rawsql,
       actions: [
         {
@@ -202,23 +202,23 @@ async function createAlarmRule(newAlarm) {
         newAlarm.triggerTime +
         "}";
 
-        newRule = {
-            name: "data_to_webserver_alarm",
-            sql: rawsql,
-            //sql: "SELECT * FROM \"test/topic\" WHERE payload.x = 1",
-            actions: [
-              //"webhook:" + global.alarmResource.name,
-              {
-                "function":"republish",
-                "args":{
-                  "payload": payload_templ,
-                  "topic": "web_hook/alarm_Rule"
-                }
-              }
-            ],
-            description: "ALARM-RULE",
-            enable: newAlarm.status
-          };
+      newRule = {
+        name: "data_to_webserver_alarm",
+        sql: rawsql,
+        //sql: "SELECT * FROM \"test/topic\" WHERE payload.x = 1",
+        actions: [
+          //"webhook:" + global.alarmResource.name,
+          {
+            function: "republish",
+            args: {
+              payload: payload_templ,
+              topic: "web_hook/alarm_Rule",
+            },
+          },
+        ],
+        description: "ALARM-RULE",
+        enable: newAlarm.status,
+      };
 
       const res = await axios.put(url, newRule, auth);
 
@@ -235,7 +235,6 @@ async function createAlarmRule(newAlarm) {
 //UPDATE ALARM STATUS
 async function updateAlarmRuleStatus(emqxRuleId, status) {
   try {
-    
     const url = "http://localhost:18083/api/v5/rules/" + emqxRuleId;
     //const url = "http://" + process.env.EMQX_API_HOST + ":8085/api/v4/rules/" + emqxRuleId;
 
@@ -261,7 +260,6 @@ async function updateAlarmRuleStatus(emqxRuleId, status) {
 //DELETE ONLY ONE RULE
 async function deleteAlarmRule(emqxRuleId) {
   try {
-
     const url = "http://localhost:18083/api/v5/rules/" + emqxRuleId;
     //const url = "http://" + process.env.EMQX_API_HOST + ":8085/api/v4/rules/" + emqxRuleId;
 

@@ -8,8 +8,7 @@ const colors = require("colors");
 const auth = {
   auth: {
     username: "admin",
-    password: "dashpass"
-    //password: process.env.EMQX_DEFAULT_APPLICATION_SECRET
+    password: process.env.EMQX_DEFAULT_APPLICATION_SECRET,
   },
 };
 
@@ -40,7 +39,7 @@ async function listResources() {
 
     const res = await axios.get(url, auth);
 
-    //console.log(res.data); 
+    //console.log(res.data);
 
     const size = res.data.length;
 
@@ -87,8 +86,6 @@ async function listResources() {
     } else {
       console.log("Error in emqx api");
     }
-
-    
   } catch (error) {
     console.log("Error listing emqx resources");
     console.log(error);
@@ -97,35 +94,33 @@ async function listResources() {
 
 //create resources
 async function createResources() {
-
   try {
-    
     const url = "http://localhost:18083/api/v5/bridges/";
     //const url = "http://" + process.env.EMQX_API_HOST + ":8085/api/v4/resources";
 
     const data1 = {
-        body: "{\"payload\":${payload}}",
-        direction: "egress",
-        connect_timeout: "15s",
-        enable: true,
-        enable_pipelining: 100,
-        local_topic: "web_hook/saver_Rule",
-        max_retries: 3,
-        method: "post",
-        name: "saver-webhook",
-        pool_size: 4,
-        pool_type: "random",
-        request_timeout: "15s",
-        ssl: {
-          "enable": false
-        },
-        headers: { 
-            'content-type': 'application/json',
-            token: "121212"
-        },
-        type: "webhook",
-        url: "http://localhost:3001/api/saver-webhook"
-    }
+      body: '{"payload":${payload}}',
+      direction: "egress",
+      connect_timeout: "15s",
+      enable: true,
+      enable_pipelining: 100,
+      local_topic: "web_hook/saver_Rule",
+      max_retries: 3,
+      method: "post",
+      name: "saver-webhook",
+      pool_size: 4,
+      pool_type: "random",
+      request_timeout: "15s",
+      ssl: {
+        enable: false,
+      },
+      headers: {
+        "content-type": "application/json",
+        token: process.env.EMQX_API_TOKEN,
+      },
+      type: "webhook",
+      url: "http://localhost:3001/api/saver-webhook",
+    };
 
     /*const data1 = {
       type: "webhook",
@@ -141,27 +136,27 @@ async function createResources() {
     };*/
 
     const data2 = {
-        body: "{\"payload\":${payload}}",
-        connect_timeout: "15s",
-        enable: true,
-        enable_pipelining: 100,
-        local_topic: "web_hook/alarm_Rule",
-        max_retries: 3,
-        method: "post",
-        name: "alarm-webhook",
-        pool_size: 4,
-        pool_type: "random",
-        request_timeout: "15s",
-        ssl: {
-          "enable": false
-        },
-        headers: { 
-            'content-type': 'application/json',
-            token: "121212"
-        },
-        type: "webhook",
-        url: "http://localhost:3001/api/alarm-webhook"
-    }
+      body: '{"payload":${payload}}',
+      connect_timeout: "15s",
+      enable: true,
+      enable_pipelining: 100,
+      local_topic: "web_hook/alarm_Rule",
+      max_retries: 3,
+      method: "post",
+      name: "alarm-webhook",
+      pool_size: 4,
+      pool_type: "random",
+      request_timeout: "15s",
+      ssl: {
+        enable: false,
+      },
+      headers: {
+        "content-type": "application/json",
+        token: process.env.EMQX_API_TOKEN,
+      },
+      type: "webhook",
+      url: "http://localhost:3001/api/alarm-webhook",
+    };
 
     /*const data2 = {
       type: "webhook",
@@ -230,7 +225,7 @@ global.check_mqtt_superuser = async function checkMqttSuperUser() {
 setTimeout(() => {
   console.log("LISTING RESOURCES!!!!!!!!!");
   listResources();
-}, 1000); 
+}, 1000);
 
 /*setTimeout(() => {
     console.log("LISTING RESORUCES!!!!!!!!!");
