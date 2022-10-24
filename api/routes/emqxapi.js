@@ -34,8 +34,8 @@ Para borrar manualmente los recursos y reiniciemos node */
 //list resources
 async function listResources() {
   try {
-    const url = "http://localhost:18083/api/v5/bridges/";
-    //const url = "http://" + process.env.EMQX_API_HOST +":8085/api/v4/resources/";
+    //const url = "http://localhost:18083/api/v5/bridges/";
+    const url = "http://" + process.env.EMQX_API_HOST + "bridges/";
 
     const res = await axios.get(url, auth);
 
@@ -95,8 +95,8 @@ async function listResources() {
 //create resources
 async function createResources() {
   try {
-    const url = "http://localhost:18083/api/v5/bridges/";
-    //const url = "http://" + process.env.EMQX_API_HOST + ":8085/api/v4/resources";
+    //const url = "http://localhost:18083/api/v5/bridges/";
+    const url = "http://" + process.env.EMQX_API_HOST + "bridges/";
 
     const data1 = {
       body: '{"payload":${payload}}',
@@ -119,7 +119,12 @@ async function createResources() {
         token: process.env.EMQX_API_TOKEN,
       },
       type: "webhook",
-      url: "http://localhost:3001/api/saver-webhook",
+      url:
+        "http://" +
+        process.env.API_HOST +
+        ":" +
+        process.env.API_PORT +
+        "/api/saver-webhook",
     };
 
     /*const data1 = {
@@ -155,7 +160,12 @@ async function createResources() {
         token: process.env.EMQX_API_TOKEN,
       },
       type: "webhook",
-      url: "http://localhost:3001/api/alarm-webhook",
+      url:
+        "http://" +
+        process.env.API_HOST +
+        ":" +
+        process.env.API_PORT +
+        "/api/alarm-webhook",
     };
 
     /*const data2 = {
@@ -223,13 +233,8 @@ global.check_mqtt_superuser = async function checkMqttSuperUser() {
 */
 
 setTimeout(() => {
-  console.log("LISTING RESOURCES!!!!!!!!!");
+  console.log("LISTING RESORUCES!!!!!!!!!");
   listResources();
-}, 1000);
-
-/*setTimeout(() => {
-    console.log("LISTING RESORUCES!!!!!!!!!");
-    listResources();
-  }, process.env.EMQX_RESOURCES_DELAY);*/
+}, process.env.EMQX_RESOURCES_DELAY);
 
 module.exports = router;
