@@ -229,7 +229,7 @@
                 ></el-option>
               </el-select>
 
-              <br><br>
+              <br /><br />
               <label>Column</label>
               <el-select
                 v-model="iotSwitchConfig.column"
@@ -353,7 +353,7 @@
                 ></el-option>
               </el-select>
 
-              <br><br>
+              <br /><br />
               <label>Column</label>
               <el-select
                 v-model="iotButtonConfig.column"
@@ -471,7 +471,7 @@
                 ></el-option>
               </el-select>
 
-              <br><br>
+              <br /><br />
               <label>Column</label>
               <el-select
                 v-model="iotIndicatorConfig.column"
@@ -557,7 +557,8 @@
           <div class="col-12">
             <base-button
               native-type="submit"
-              round type="info"
+              round
+              type="info"
               class="mb-3"
               size="lg"
               @click="addNewWidget()"
@@ -636,7 +637,8 @@
           <div class="col-12">
             <base-button
               native-type="submit"
-              round type="info"
+              round
+              type="info"
               class="mb-3 pull-right"
               size="lg"
               @click="saveTemplate()"
@@ -656,50 +658,45 @@
           <h4 class="card-title">Templates</h4>
         </div>
 
-        
-          <el-table 
+        <el-table
           :data="templates"
           :header-cell-style="{ background: '#27293d' }"
-          >
-            <el-table-column 
-            min-width="50" 
-            label="#" 
-            type="index"
-            >
-            </el-table-column>
-            <el-table-column prop="name" label="Name"></el-table-column>
-            <el-table-column prop="description" label="Description"></el-table-column>
-            <el-table-column
-              prop="widgets.length"
-              label="Widgets"
-              align="center"
-            ></el-table-column>
+        >
+          <el-table-column min-width="50" label="#" type="index">
+          </el-table-column>
+          <el-table-column prop="name" label="Name"></el-table-column>
+          <el-table-column
+            prop="description"
+            label="Description"
+          ></el-table-column>
+          <el-table-column
+            prop="widgets.length"
+            label="Widgets"
+            align="center"
+          ></el-table-column>
 
-            <el-table-column label="Actions">
-              <div
-                slot-scope="{ row }"
+          <el-table-column label="Actions">
+            <div slot-scope="{ row }">
+              <el-tooltip
+                content="Delete"
+                effect="light"
+                :open-delay="300"
+                placement="top"
+                style="margin: 0 auto"
               >
-                <el-tooltip
-                  content="Delete"
-                  effect="light"
-                  :open-delay="300"
-                  placement="top"
-                  style="margin: 0 auto"
+                <base-button
+                  @click="deleteTemplate(row)"
+                  type="danger"
+                  icon
+                  size="sm"
+                  class="btn-link"
                 >
-                  <base-button
-                    @click="deleteTemplate(row)"
-                    type="danger"
-                    icon
-                    size="sm"
-                    class="btn-link"
-                  >
-                    <i class="tim-icons icon-simple-remove"></i>
-                  </base-button>
-                </el-tooltip>
-              </div>
-            </el-table-column>
-          </el-table>
-        
+                  <i class="tim-icons icon-simple-remove"></i>
+                </base-button>
+              </el-tooltip>
+            </div>
+          </el-table-column>
+        </el-table>
       </card>
     </div>
 
@@ -713,7 +710,7 @@ import { Table, TableColumn } from "element-ui";
 import { Select, Option } from "element-ui";
 
 export default {
-  middleware: 'authenticated',
+  middleware: "authenticated",
   components: {
     Json,
     [Table.name]: Table,
@@ -735,7 +732,7 @@ export default {
           name: "Home",
           dId: "12345",
           templateName: "PowerSensor",
-          templateId: "1234jkhkjlj"
+          templateId: "1234jkhkjlj",
         },
         variableFullName: "Pump",
         variable: "uniquestr",
@@ -758,7 +755,7 @@ export default {
           name: "Home",
           dId: "12345",
           templateName: "PowerSensor",
-          templateId: "1234jkhkjlj"
+          templateId: "1234jkhkjlj",
         },
         variableFullName: "Pump",
         variable: "uniquestr",
@@ -777,7 +774,7 @@ export default {
           name: "Home",
           dId: "12345",
           templateName: "PowerSensor",
-          templateId: "1234jkhkjlj"
+          templateId: "1234jkhkjlj",
         },
         variableFullName: "Pump",
         variable: "uniquestr",
@@ -795,7 +792,7 @@ export default {
           name: "Home",
           dId: "12345",
           templateName: "PowerSensor",
-          templateId: "1234jkhkjlj"
+          templateId: "1234jkhkjlj",
         },
         variableFullName: "Pump",
         variable: "uniquestr",
@@ -807,22 +804,21 @@ export default {
       },
     };
   },
-  mounted(){
+  mounted() {
     this.getTemplates();
   },
   methods: {
-
     //Get Templates
     async getTemplates() {
       const axiosHeaders = {
         headers: {
-          token: this.$store.state.auth.token
-        }
+          token: this.$store.state.auth.token,
+        },
       };
 
       try {
         const res = await this.$axios.get("/template", axiosHeaders);
-        console.log(res.data);
+        //console.log(res.data);
 
         if (res.data.status == "success") {
           this.templates = res.data.data;
@@ -831,7 +827,7 @@ export default {
         this.$notify({
           type: "danger",
           icon: "tim-icons icon-alert-circle-exc",
-          message: "Error getting templates..."
+          message: "Error getting templates...",
         });
         console.log(error);
         return;
@@ -842,18 +838,16 @@ export default {
     async saveTemplate() {
       const axiosHeaders = {
         headers: {
-          token: this.$store.state.auth.token
-        }
+          token: this.$store.state.auth.token,
+        },
       };
-
-      console.log(axiosHeaders);
 
       const toSend = {
         template: {
           name: this.templateName,
           description: this.templateDescription,
-          widgets: this.widgets
-        }
+          widgets: this.widgets,
+        },
       };
 
       try {
@@ -863,7 +857,7 @@ export default {
           this.$notify({
             type: "success",
             icon: "tim-icons icon-alert-circle-exc",
-            message: "Template created!"
+            message: "Template created!",
           });
           this.getTemplates();
 
@@ -873,7 +867,7 @@ export default {
         this.$notify({
           type: "danger",
           icon: "tim-icons icon-alert-circle-exc",
-          message: "Error creating template..."
+          message: "Error creating template...",
         });
         console.log(error);
         return;
@@ -882,32 +876,27 @@ export default {
 
     //Delete Template
     async deleteTemplate(template) {
-      
       const axiosHeaders = {
         headers: {
-          token: this.$store.state.auth.token
+          token: this.$store.state.auth.token,
         },
-        params:{
-          templateId:template._id
-        }
+        params: {
+          templateId: template._id,
+        },
       };
 
-      console.log(axiosHeaders);
-
       try {
-
         const res = await this.$axios.delete("/template", axiosHeaders);
 
-        console.log(res.data)
-
         if (res.data.status == "fail" && res.data.error == "template in use") {
-
           this.$notify({
             type: "danger",
             icon: "tim-icons icon-alert-circle-exc",
-            message: template.name + " is in use. First remove the devices linked to the template!"
+            message:
+              template.name +
+              " is in use. First remove the devices linked to the template!",
           });
-          
+
           return;
         }
 
@@ -915,16 +904,16 @@ export default {
           this.$notify({
             type: "success",
             icon: "tim-icons icon-check-2",
-            message: template.name + " was deleted!"
+            message: template.name + " was deleted!",
           });
-          
+
           this.getTemplates();
         }
       } catch (error) {
         this.$notify({
           type: "danger",
           icon: "tim-icons icon-alert-circle-exc",
-          message: "Error getting templates..."
+          message: "Error getting templates...",
         });
         console.log(error);
         return;

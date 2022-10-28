@@ -65,8 +65,6 @@ var uri =
   "/" +
   mongoDatabase;
 
-console.log(uri);
-
 const options = {
   useNewUrlParser: true,
   useCreateIndex: true,

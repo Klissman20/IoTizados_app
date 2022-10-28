@@ -39,13 +39,13 @@ export const actions = {
     const axiosHeader = {
       headers: {
         token: this.state.auth.token,
-      }
+      },
     };
 
     this.$axios
       .get("/device", axiosHeader)
       .then((res) => {
-        console.log(res.data.data);
+        //console.log(res.data.data);
 
         res.data.data.forEach((device, index) => {
           if (device.selected) {
@@ -77,7 +77,7 @@ export const actions = {
     this.$axios
       .get("/notifications", axiosHeader)
       .then((res) => {
-        console.log(res.data.data);
+        //console.log(res.data.data);
         this.commit("setNotifications", res.data.data);
       })
       .catch((error) => {

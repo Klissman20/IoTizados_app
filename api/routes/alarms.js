@@ -161,7 +161,7 @@ async function createAlarmRule(newAlarm) {
     const res = await axios.post(url, newRule, auth);
     var emqxRuleId = res.data.id;
 
-    console.log(res.data.id);
+    //console.log(res.data.id);
 
     if (res.data && res.status === 201) {
       //save rule in mongo -- grabamos regla en mongo

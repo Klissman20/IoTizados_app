@@ -146,7 +146,6 @@ export default {
           null,
           axiosHeaders
         );
-        console.log(credentials.data);
 
         if (credentials.data.status == "success") {
           this.options.username = credentials.data.username;
@@ -180,7 +179,7 @@ export default {
           null,
           axiosHeaders
         );
-        console.log(credentials.data);
+        //console.log(credentials.data);
 
         if (credentials.data.status == "success") {
           this.client.options.username = credentials.data.username;
@@ -227,8 +226,7 @@ export default {
 
       //MQTT CONNECTION SUCCESS
       this.client.on("connect", () => {
-        console.log(this.client);
-
+        //console.log(this.client);
         console.log("Connection succeeded!");
 
         //SDATA SUBSCRIBE
@@ -250,17 +248,6 @@ export default {
             );
           }
         );
-
-        /*
-          //NOTIF SUBSCRIBE
-          this.client.subscribe(notifSubscribeTopic, { qos: 0 }, err => {
-            if (err) {
-              console.log("Error in NotifSubscription");
-              return;
-            }
-            console.log("Notif subscription Success");
-            console.log(notifSubscribeTopic);
-          });*/
       });
 
       this.client.on("error", (error) => {
@@ -277,8 +264,8 @@ export default {
       });
 
       this.client.on("message", (topic, message) => {
-        console.log("Message from topic " + topic + " -> ");
-        console.log(message.toString());
+        //console.log("Message from topic " + topic + " -> ");
+        //console.log(message.toString());
 
         try {
           const splittedTopic = topic.split("/");

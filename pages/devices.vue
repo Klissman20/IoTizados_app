@@ -351,7 +351,7 @@ export default {
 
       try {
         const res = await this.$axios.get("/template", axiosHeaders);
-        console.log(res.data);
+        //console.log(res.data);
 
         if (res.data.status == "success") {
           this.templates = res.data.data;

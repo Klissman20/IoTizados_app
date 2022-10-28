@@ -31,7 +31,7 @@ router.post("/saver-webhook", async (req, res) => {
 
     const data = req.body.payload;
 
-    console.log(data);
+    //console.log(data);
 
     const splittedTopic = data.topic.split("/");
     const userId = data.userId;
