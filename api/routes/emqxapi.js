@@ -4,6 +4,7 @@ const axios = require("axios");
 const colors = require("colors");
 
 import EmqxAuthRule from "../models/emqx_auth.js";
+import MqttAclRule from "../models/emqx_acl.js";
 
 const auth = {
   auth: {
