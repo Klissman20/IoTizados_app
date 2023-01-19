@@ -85,7 +85,7 @@ export default {
   },
 
   serverMiddleware: {
-    "/api": "~/api",
+    "/api": "~/api", //to start API next to NUXT
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

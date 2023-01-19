@@ -211,16 +211,28 @@ global.check_mqtt_superuser = async function checkMqttSuperUser() {
     if (superusers.length > 0) {
       return;
     } else if (superusers.length == 0) {
-      await EmqxAuthRule.create({
-        publish: ["#"],
-        subscribe: ["#"],
+      const newRule = {
         userId: "emqxmqttsuperuser",
         username: process.env.EMQX_NODE_SUPERUSER_USER,
-        password: process.env.EMQX_NODE_SUPERUSER_PASSWORD,
+        pass: process.env.EMQX_NODE_SUPERUSER_PASSWORD,
+        is: "true",
         type: "superuser",
         time: Date.now(),
         updatedTime: Date.now(),
-      });
+      };
+      const result = await EmqxAuthRule.create(newRule);
+
+      const authzRule = {
+        userId: "emqxmqttsuperuser",
+        username: process.env.EMQX_NODE_SUPERUSER_USER,
+        action: "all",
+        permission: "allow",
+        topics: ["#"],
+        time: newRule.time,
+        type: "superuser",
+        updatedTime: newRule.updatedTime,
+      };
+      await MqttAclRule.create(authzRule);
 
       console.log("Mqtt super user created");
     }
