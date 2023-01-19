@@ -203,7 +203,6 @@ async function createResources() {
   }
 }
 
-/*
 //check if superuser exist if not we create one
 global.check_mqtt_superuser = async function checkMqttSuperUser() {
   try {
@@ -230,7 +229,6 @@ global.check_mqtt_superuser = async function checkMqttSuperUser() {
     console.log(error);
   }
 };
-*/
 
 setTimeout(() => {
   console.log("LISTING RESORUCES!!!!!!!!!");
