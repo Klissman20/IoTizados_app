@@ -214,7 +214,7 @@ global.check_mqtt_superuser = async function checkMqttSuperUser() {
       const newRule = {
         userId: "emqxmqttsuperuser",
         username: process.env.EMQX_NODE_SUPERUSER_USER,
-        pass: process.env.EMQX_NODE_SUPERUSER_PASSWORD,
+        pass: process.env.EMQX_NODE_SUPERUSER_PASS,
         is: "true",
         type: "superuser",
         time: Date.now(),
